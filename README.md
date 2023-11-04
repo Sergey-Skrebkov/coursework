@@ -30,3 +30,4 @@
 ```
 http://localhost:9000/#/
 ```
+БД sber пользователь sber, пароль passW0RD
