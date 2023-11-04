@@ -1,9 +1,15 @@
 package ru.template.example.documents.service;
 
+import lombok.RequiredArgsConstructor;
+import ma.glasnost.orika.MapperFacade;
+import ma.glasnost.orika.impl.DefaultMapperFactory;
 import org.apache.commons.lang3.RandomUtils;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import ru.template.example.documents.controller.dto.DocumentDto;
 import ru.template.example.documents.controller.dto.Status;
+import ru.template.example.documents.entity.DocumentEntity;
+import ru.template.example.documents.repository.DocumentRepository;
 import ru.template.example.documents.store.DocumentStore;
 
 import java.util.Date;
@@ -13,7 +19,14 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
+@Lazy
 public class DocumentServiceImpl implements DocumentService {
+    private final DocumentRepository documentRepository;
+    private final MapperFacade mapperFacade = new DefaultMapperFactory
+            .Builder()
+            .build()
+            .getMapperFacade();
 
     public DocumentDto save(DocumentDto documentDto) {
         if (documentDto.getId() == null) {
@@ -56,7 +69,9 @@ public class DocumentServiceImpl implements DocumentService {
     }
 
     public List<DocumentDto> findAll() {
-        return DocumentStore.getInstance().getDocumentDtos();
+        List<DocumentEntity> documents
+                = documentRepository.findAll();
+        return mapperFacade.mapAsList(documents, DocumentDto.class);
     }
 
     public DocumentDto get(Long id) {
