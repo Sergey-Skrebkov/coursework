@@ -10,9 +10,9 @@ cors:
 spring:
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/sber
+    url: jdbc:postgresql://localhost:5431/sber
     username: sber
-    password: passW0RD
+    password: passWORD
   jpa:
     show-sql: true
     hibernate:

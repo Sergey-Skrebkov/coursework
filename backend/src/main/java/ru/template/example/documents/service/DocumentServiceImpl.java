@@ -71,7 +71,9 @@ public class DocumentServiceImpl implements DocumentService {
     public List<DocumentDto> findAll() {
         List<DocumentEntity> documents
                 = documentRepository.findAll();
-        return mapperFacade.mapAsList(documents, DocumentDto.class);
+        List<DocumentDto> documentsDto = mapperFacade.mapAsList(documents, DocumentDto.class);
+        documentsDto.forEach((e) -> {e.setStatus(Status.of("NEW", "Новый"));});
+        return documentsDto;
     }
 
     public DocumentDto get(Long id) {

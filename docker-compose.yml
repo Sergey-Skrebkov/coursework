@@ -15,10 +15,10 @@ services:
   dataBase:
     image: postgres:15
     environment:
-      PGDATA: "/var/lib/postgresql/data/pgdata"
-    volumes:
-      - ../sql:/var/lib/postgresql/data
+      POSTGRES_DB: "sber"
+      POSTGRES_USER: "sber"
+      POSTGRES_PASSWORD: "passWORD"
     ports:
-      - "5432:5432"
+      - "5431:5432"
     restart: always
 
