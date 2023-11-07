@@ -9,9 +9,12 @@ import org.springframework.stereotype.Service;
 import ru.template.example.documents.controller.dto.DocumentDto;
 import ru.template.example.documents.controller.dto.Status;
 import ru.template.example.documents.entity.DocumentEntity;
+import ru.template.example.documents.entity.StatusEntity;
 import ru.template.example.documents.repository.DocumentRepository;
+import ru.template.example.documents.repository.StatusRepository;
 import ru.template.example.documents.store.DocumentStore;
 
+import java.time.Instant;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -23,6 +26,7 @@ import java.util.stream.Collectors;
 @Lazy
 public class DocumentServiceImpl implements DocumentService {
     private final DocumentRepository documentRepository;
+    private final StatusRepository statusRepository;
     private final MapperFacade mapperFacade = new DefaultMapperFactory
             .Builder()
             .build()
@@ -30,9 +34,13 @@ public class DocumentServiceImpl implements DocumentService {
 
     public DocumentDto save(DocumentDto documentDto) {
         if (documentDto.getId() == null) {
-            documentDto.setId(RandomUtils.nextLong(0L, 999L));
+            //Докинуть ошибку сюда
         }
-        documentDto.setDate(new Date());
+        Optional<DocumentEntity> documentEntityOptional = documentRepository.findById(documentDto.getId());
+        if(documentEntityOptional.isEmpty()){
+            //throw
+        }
+        documentEntityOptional.get().setDate(Instant.now());
         if (documentDto.getStatus() == null) {
             documentDto.setStatus(Status.of("NEW", "Новый"));
         }
@@ -42,13 +50,9 @@ public class DocumentServiceImpl implements DocumentService {
 
 
     public DocumentDto update(DocumentDto documentDto) {
-        List<DocumentDto> documentDtos = DocumentStore.getInstance().getDocumentDtos();
-        Optional<DocumentDto> dto = documentDtos.stream()
-                .filter(d -> d.getId().equals(documentDto.getId())).findFirst();
-        if (dto.isPresent()) {
-            delete(documentDto.getId());
-            save(documentDto);
-        }
+        Optional<DocumentEntity> documentEntityOptional = documentRepository.findById(documentDto.getId());
+        Optional<StatusEntity> status = statusRepository.findByCode("IN_PROCESS");
+        documentRepository.updateStatusById(status.get(), documentDto.getId());
         return documentDto;
     }
 
@@ -71,14 +75,11 @@ public class DocumentServiceImpl implements DocumentService {
     public List<DocumentDto> findAll() {
         List<DocumentEntity> documents
                 = documentRepository.findAll();
-        List<DocumentDto> documentsDto = mapperFacade.mapAsList(documents, DocumentDto.class);
-        documentsDto.forEach((e) -> {e.setStatus(Status.of("NEW", "Новый"));});
-        return documentsDto;
+        return mapperFacade.mapAsList(documents, DocumentDto.class);
     }
 
     public DocumentDto get(Long id) {
-        List<DocumentDto> documentDtos = DocumentStore.getInstance().getDocumentDtos();
-        return documentDtos.stream()
-                .filter(d -> d.getId().equals(id)).findFirst().get();
+        Optional<DocumentEntity> document = documentRepository.findById(id);
+        return mapperFacade.map(document.get(), DocumentDto.class);
     }
 }

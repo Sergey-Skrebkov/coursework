@@ -18,7 +18,6 @@ databaseChangeLog:
                   name: type
                   type: text
                   constraints:
-                    unique: true
                     nullable: false
               - column:
                   name: organization
@@ -31,9 +30,13 @@ databaseChangeLog:
               - column:
                   name: patient
                   type: text
+                  constraints:
+                    nullable: false
               - column:
                   name: state
                   type: text
+                  constraints:
+                    nullable: false
               - column:
                   name: description
                   type: text

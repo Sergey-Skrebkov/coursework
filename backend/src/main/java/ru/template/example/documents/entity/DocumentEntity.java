@@ -36,12 +36,13 @@ public class DocumentEntity {
     @Type(type = "org.hibernate.type.TextType")
     private String patient;
 
-    @Column(name = "state")
-    @Type(type = "org.hibernate.type.TextType")
-    private String state;
 
     @Column(name = "description")
     @Type(type = "org.hibernate.type.TextType")
     private String description;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "status_id")
+    private StatusEntity status;
 
 }

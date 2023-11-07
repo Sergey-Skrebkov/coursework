@@ -41,7 +41,6 @@ public class DocumentController {
             produces = MediaType.APPLICATION_JSON_VALUE)
     public DocumentDto send(@RequestBody IdDto id) {
         DocumentDto document = service.get(id.getId());
-        document.setStatus(Status.of("IN_PROCESS", "В обработке"));
         return service.update(document);
     }
 

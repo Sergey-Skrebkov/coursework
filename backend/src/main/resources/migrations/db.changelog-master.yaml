@@ -1,5 +1,8 @@
 databaseChangeLog:
   - logicalFilePath: migrations/db.changelog-master.yaml
   - include:
-      file: 01.000.00/changelog.yaml
+      file: 01.000.00/changelog.sql
+      relativeToChangelogFile: true
+  - include:
+      file: 01.000.01/changelog.sql
       relativeToChangelogFile: true

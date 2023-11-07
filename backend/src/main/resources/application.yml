@@ -22,3 +22,5 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
   liquibase:
     change-log: classpath:migrations/db.changelog-master.yaml
+  kafka:
+    bootstrap-servers: localhost:29092

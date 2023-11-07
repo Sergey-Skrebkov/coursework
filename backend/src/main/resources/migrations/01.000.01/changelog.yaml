@@ -1,0 +1,72 @@
+databaseChangeLog:
+  - logicalFilePath: db/changelog/db.changelog-master.yaml
+  - changeSet:
+      id: 2
+      Author: Sergey
+      Comment: "Add data to document table"
+      changes:
+        - insert:
+            tableName: document
+            columns:
+              - column:
+                  name: type
+                  value: "Направление на медико-социальную экспертизу организацией, оказывающей медицинскую помощь"
+              - column:
+                  name: organization
+                  value: "ОГБУЗ Саянская городская больница"
+              - column:
+                  name: date
+                  value: "2023-11-04 22:30:06.000000"
+              - column:
+                  name: patient
+                  value: "Иванов Иван Иванович"
+              - column:
+                  name: state
+                  value: "NEW"
+              - column:
+                  name: description
+                  value: "Направление"
+        - insert:
+            tableName: document
+            columns:
+              - column:
+                  name: type
+                  value: "Направление на медико-социальную экспертизу организацией, оказывающей медицинскую помощь"
+              - column:
+                  name: organization
+                  value: "ОГБУЗ Саянская городская больница"
+              - column:
+                  name: date
+                  value: "2023-11-04 22:30:06.000000"
+              - column:
+                  name: patient
+                  value: "Иванов Иван Михайлович"
+              - column:
+                  name: state
+                  value: "NEW"
+              - column:
+                  name: description
+                  value: "Направление"
+        - insert:
+            tableName: document
+            columns:
+              - column:
+                  name: type
+                  value: "Направление на медико-социальную экспертизу организацией, оказывающей медицинскую помощь"
+              - column:
+                  name: organization
+                  value: "ОГБУЗ Саянская городская больница"
+              - column:
+                  name: date
+                  value: "2023-11-04 22:30:06.000000"
+              - column:
+                  name: patient
+                  value: "Иванов Иван Михайлович"
+              - column:
+                  name: state
+                  value: "IN_PROCESS"
+              - column:
+                  name: description
+                  value: "Направление"
+
+
