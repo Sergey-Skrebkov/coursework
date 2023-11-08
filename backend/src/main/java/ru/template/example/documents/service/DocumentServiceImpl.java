@@ -3,23 +3,19 @@ package ru.template.example.documents.service;
 import lombok.RequiredArgsConstructor;
 import ma.glasnost.orika.MapperFacade;
 import ma.glasnost.orika.impl.DefaultMapperFactory;
-import org.apache.commons.lang3.RandomUtils;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import ru.template.example.documents.controller.dto.DocumentDto;
-import ru.template.example.documents.controller.dto.Status;
 import ru.template.example.documents.entity.DocumentEntity;
 import ru.template.example.documents.entity.StatusEntity;
 import ru.template.example.documents.repository.DocumentRepository;
 import ru.template.example.documents.repository.StatusRepository;
-import ru.template.example.documents.store.DocumentStore;
+import ru.template.example.kafka.KafkaSender;
 
 import java.time.Instant;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -27,29 +23,24 @@ import java.util.stream.Collectors;
 public class DocumentServiceImpl implements DocumentService {
     private final DocumentRepository documentRepository;
     private final StatusRepository statusRepository;
+    private final KafkaSender kafkaSender;
     private final MapperFacade mapperFacade = new DefaultMapperFactory
             .Builder()
             .build()
             .getMapperFacade();
 
     public DocumentDto save(DocumentDto documentDto) {
-        if (documentDto.getId() == null) {
-            //Докинуть ошибку сюда
-        }
-        Optional<DocumentEntity> documentEntityOptional = documentRepository.findById(documentDto.getId());
-        if(documentEntityOptional.isEmpty()){
-            //throw
-        }
-        documentEntityOptional.get().setDate(Instant.now());
-        if (documentDto.getStatus() == null) {
-            documentDto.setStatus(Status.of("NEW", "Новый"));
-        }
-        DocumentStore.getInstance().getDocumentDtos().add(documentDto);
-        return documentDto;
+        DocumentEntity document = mapperFacade.map(documentDto, DocumentEntity.class);
+        Optional<StatusEntity> status = statusRepository.findByCode("NEW");
+        document.setStatus(status.get());
+        document.setDate(Instant.now());
+        documentRepository.save(document);
+        return mapperFacade.map(document, DocumentDto.class);
     }
 
 
     public DocumentDto update(DocumentDto documentDto) {
+        kafkaSender.sendMessage(documentDto, "documents");
         Optional<DocumentEntity> documentEntityOptional = documentRepository.findById(documentDto.getId());
         Optional<StatusEntity> status = statusRepository.findByCode("IN_PROCESS");
         documentRepository.updateStatusById(status.get(), documentDto.getId());
@@ -57,19 +48,11 @@ public class DocumentServiceImpl implements DocumentService {
     }
 
     public void delete(Long id) {
-        List<DocumentDto> documentDtos = DocumentStore.getInstance().getDocumentDtos();
-        List<DocumentDto> newList = documentDtos.stream()
-                .filter(d -> !d.getId().equals(id)).collect(Collectors.toList());
-        documentDtos.clear();
-        documentDtos.addAll(newList);
+        documentRepository.deleteById(id);
     }
 
     public void deleteAll(Set<Long> ids) {
-        List<DocumentDto> documentDtos = DocumentStore.getInstance().getDocumentDtos();
-        List<DocumentDto> newList = documentDtos.stream()
-                .filter(d -> !ids.contains(d.getId())).collect(Collectors.toList());
-        documentDtos.clear();
-        documentDtos.addAll(newList);
+        ids.forEach(this::delete);
     }
 
     public List<DocumentDto> findAll() {

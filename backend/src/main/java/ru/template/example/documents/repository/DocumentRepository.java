@@ -17,5 +17,8 @@ public interface DocumentRepository extends JpaRepository<DocumentEntity, Long> 
     void updateStatusById(@Nullable StatusEntity status, Long id);
 
     @Override
-    Optional<DocumentEntity> findById(Long integer);
+    Optional<DocumentEntity> findById(Long id);
+
+    @Override
+    void deleteById(Long id);
 }
