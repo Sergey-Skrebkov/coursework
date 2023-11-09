@@ -62,6 +62,6 @@ public class DocumentServiceImpl implements DocumentService {
     public DocumentDto get(Long id) {
         List<DocumentDto> documentDtos = DocumentStore.getInstance().getDocumentDtos();
         return documentDtos.stream()
-                .filter(d -> d.getId().equals(id)).findFirst().get();
+                .filter(d -> d.getId().equals(id)).findFirst().orElseThrow(() -> new IllegalStateException("cannot find " + id));
     }
 }
