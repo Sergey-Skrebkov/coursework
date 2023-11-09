@@ -1,6 +1,5 @@
 package ru.template.example.aspect;
 
-import lombok.extern.log4j.Log4j;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.After;
 import org.aspectj.lang.annotation.Aspect;
@@ -14,7 +13,7 @@ import java.util.logging.Logger;
 @Component
 @Aspect
 public class LoggingAspect {
-    private Logger logger = Logger.getLogger(LoggingAspect.class.getName());
+    private final Logger logger = Logger.getLogger(LoggingAspect.class.getName());
 
     @Pointcut("within(ru.template.example.documents.controller.*)")
     public void pointcut() {
