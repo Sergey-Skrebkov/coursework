@@ -1,16 +1,18 @@
 package ru.template.example.documents.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import ma.glasnost.orika.MapperFacade;
 import ma.glasnost.orika.impl.DefaultMapperFactory;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.template.example.documents.controller.dto.DocumentDto;
-import ru.template.example.documents.entity.DocumentEntity;
-import ru.template.example.documents.entity.StatusEntity;
+import ru.template.example.documents.entity.*;
 import ru.template.example.documents.repository.DocumentRepository;
+import ru.template.example.documents.repository.MessageForKafkaRepository;
 import ru.template.example.documents.repository.StatusRepository;
-import ru.template.example.kafka.KafkaSender;
 
 import java.time.Instant;
 import java.util.List;
@@ -24,14 +26,17 @@ import java.util.stream.Collectors;
 public class DocumentServiceImpl implements DocumentService {
     private final DocumentRepository documentRepository;
     private final StatusRepository statusRepository;
-    private final KafkaSender kafkaSender;
+    private final MessageForKafkaRepository messageForKafkaRepository;
+    private final ObjectMapper objectMapper;
     private final MapperFacade mapperFacade = new DefaultMapperFactory
             .Builder()
             .build()
             .getMapperFacade();
 
     public DocumentDto save(DocumentDto documentDto) {
+        System.err.println(documentDto);
         DocumentEntity document = mapperFacade.map(documentDto, DocumentEntity.class);
+        System.err.println(document);
         Optional<StatusEntity> status = statusRepository.findByCode("NEW");
         document.setStatus(status.get());
         document.setDate(Instant.now());
@@ -41,7 +46,7 @@ public class DocumentServiceImpl implements DocumentService {
 
 
     public DocumentDto update(DocumentDto documentDto) {
-        kafkaSender.sendMessage(documentDto, "documents");
+        addToTableForKafkaSender(documentDto);
         Optional<DocumentEntity> documentEntityOptional = documentRepository.findById(documentDto.getId());
         Optional<StatusEntity> status = statusRepository.findByCode("IN_PROCESS");
         documentRepository.updateStatusById(status.get(), documentDto.getId());
@@ -51,7 +56,7 @@ public class DocumentServiceImpl implements DocumentService {
     public void delete(Long id) {
         documentRepository.deleteById(id);
     }
-
+    @Transactional
     public void deleteAll(Set<Long> ids) {
         ids.forEach(this::delete);
     }
@@ -65,5 +70,18 @@ public class DocumentServiceImpl implements DocumentService {
     public DocumentDto get(Long id) {
         Optional<DocumentEntity> document = documentRepository.findById(id);
         return mapperFacade.map(document.get(), DocumentDto.class);
+    }
+
+    private void addToTableForKafkaSender(DocumentDto documentDto){
+        MessageForKafkaEntity message = new MessageForKafkaEntity();
+        try {
+            String json = objectMapper.writeValueAsString(documentDto);
+            message.setMessage(json);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+        message.setSend(false);
+        message.setCreateDate(Instant.now());
+        messageForKafkaRepository.save(message);
     }
 }
