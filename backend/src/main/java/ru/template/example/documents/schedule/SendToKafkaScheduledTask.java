@@ -7,7 +7,7 @@ import ru.template.example.documents.entity.MessageForKafkaEntity;
 import ru.template.example.documents.repository.MessageForKafkaRepository;
 import ru.template.example.kafka.KafkaSender;
 
-import java.util.*;
+import java.util.List;
 
 @Component
 @AllArgsConstructor

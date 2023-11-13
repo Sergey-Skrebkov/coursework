@@ -10,6 +10,16 @@ services:
       - "5431:5432"
     restart: always
 
+  secondDataBase:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: "sber"
+      POSTGRES_USER: "sber"
+      POSTGRES_PASSWORD: "passWORD"
+    ports:
+      - "5430:5432"
+    restart: always
+
   zookeeper:
     image: confluentinc/cp-zookeeper:latest
     environment:
@@ -17,6 +27,7 @@ services:
       ZOOKEEPER_TICK_TIME: 2000
     ports:
       - "2181:2181"
+    restart: always
 
   kafka:
     image: confluentinc/cp-kafka:latest
@@ -31,3 +42,4 @@ services:
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
       KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+    restart: always
