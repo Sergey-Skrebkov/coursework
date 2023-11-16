@@ -1,24 +1,19 @@
 package ru.template.example.documents.entity;
 
-import lombok.*;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.Type;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.time.Instant;
 import java.util.UUID;
 
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
-@Data
+@Getter
+@Setter
 @Entity
-@Table(name = "message_for_kafka")
-public class MessageForKafkaEntity {
+@Table(name = "message_for_kafka_answer")
+public class MessageForKafkaAnswerEntity {
+
     @Id
     @Column(name = "id", nullable = false)
     private UUID id;
@@ -35,5 +30,4 @@ public class MessageForKafkaEntity {
 
     @Column(name = "create_date")
     private Instant createDate;
-
 }

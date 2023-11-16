@@ -1,4 +1,4 @@
-package ru.template.example.kafka;
+package ru.template.example.documents.kafka;
 
 import lombok.AllArgsConstructor;
 import org.springframework.kafka.core.KafkaTemplate;

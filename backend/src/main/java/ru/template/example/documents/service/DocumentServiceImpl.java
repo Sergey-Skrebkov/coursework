@@ -18,6 +18,7 @@ import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -34,9 +35,7 @@ public class DocumentServiceImpl implements DocumentService {
             .getMapperFacade();
 
     public DocumentDto save(DocumentDto documentDto) {
-        System.err.println(documentDto);
         DocumentEntity document = mapperFacade.map(documentDto, DocumentEntity.class);
-        System.err.println(document);
         Optional<StatusEntity> status = statusRepository.findByCode("NEW");
         document.setStatus(status.get());
         document.setDate(Instant.now());
@@ -46,9 +45,16 @@ public class DocumentServiceImpl implements DocumentService {
 
 
     public DocumentDto update(DocumentDto documentDto) {
-        addToTableForKafkaSender(documentDto);
+        Optional<DocumentEntity> documentEntityOptional = documentRepository.findById(documentDto.getId());
+        Optional<StatusEntity> status = statusRepository.findByCode(documentDto.getStatus().getCode());
+        documentRepository.updateStatusById(status.get(), documentDto.getId());
+        return documentDto;
+    }
+
+    public DocumentDto sendOnApprove(DocumentDto documentDto) {
         Optional<DocumentEntity> documentEntityOptional = documentRepository.findById(documentDto.getId());
         Optional<StatusEntity> status = statusRepository.findByCode("IN_PROCESS");
+        addToTableForKafkaSender(documentDto);
         documentRepository.updateStatusById(status.get(), documentDto.getId());
         return documentDto;
     }
@@ -56,6 +62,7 @@ public class DocumentServiceImpl implements DocumentService {
     public void delete(Long id) {
         documentRepository.deleteById(id);
     }
+
     @Transactional
     public void deleteAll(Set<Long> ids) {
         ids.forEach(this::delete);
@@ -72,7 +79,7 @@ public class DocumentServiceImpl implements DocumentService {
         return mapperFacade.map(document.get(), DocumentDto.class);
     }
 
-    private void addToTableForKafkaSender(DocumentDto documentDto){
+    private void addToTableForKafkaSender(DocumentDto documentDto) {
         MessageForKafkaEntity message = new MessageForKafkaEntity();
         try {
             String json = objectMapper.writeValueAsString(documentDto);
@@ -80,6 +87,7 @@ public class DocumentServiceImpl implements DocumentService {
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
+        message.setId(UUID.randomUUID());
         message.setSend(false);
         message.setCreateDate(Instant.now());
         messageForKafkaRepository.save(message);

@@ -9,3 +9,6 @@ databaseChangeLog:
   - include:
       file: 01.000.02/changelog.sql
       relativeToChangelogFile: true
+  - include:
+      file: 01.000.03/changelog.sql
+      relativeToChangelogFile: true

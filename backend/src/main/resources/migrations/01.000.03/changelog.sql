@@ -2,8 +2,8 @@
 
 -- changeset skrebkov-ss:3-1
 
-create table message_for_kafka(
-    id uuid primary key default gen_random_uuid (),
+create table message_for_kafka_answer(
+    id uuid primary key,
     message text not null,
     send bool default false,
     accepted bool,

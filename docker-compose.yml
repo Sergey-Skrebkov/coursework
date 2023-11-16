@@ -10,16 +10,6 @@ services:
       - "5431:5432"
     restart: always
 
-  secondDataBase:
-    image: postgres:15
-    environment:
-      POSTGRES_DB: "sber"
-      POSTGRES_USER: "sber"
-      POSTGRES_PASSWORD: "passWORD"
-    ports:
-      - "5430:5432"
-    restart: always
-
   zookeeper:
     image: confluentinc/cp-zookeeper:latest
     environment:

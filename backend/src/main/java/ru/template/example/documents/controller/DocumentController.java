@@ -42,7 +42,8 @@ public class DocumentController {
             produces = MediaType.APPLICATION_JSON_VALUE)
     public DocumentDto send(@RequestBody IdDto id) {
         DocumentDto document = service.get(id.getId());
-        return service.update(document);
+        document.setStatus(new Status("IN_PROCESS", "В обработке"));
+        return service.sendOnApprove(document);
     }
 
     @DeleteMapping(path = "/{id}")

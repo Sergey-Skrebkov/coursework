@@ -23,11 +23,12 @@ import static org.apache.commons.lang3.RandomStringUtils.randomAlphabetic;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
-@ExtendWith({ SpringExtension.class, MockitoExtension.class })
+@ExtendWith({SpringExtension.class, MockitoExtension.class})
 public class DocumentControllerTest {
     private static final String BASE_PATH = "/documents";
 
@@ -74,13 +75,23 @@ public class DocumentControllerTest {
     }
 
     @Test
-    public void getTest() {
-        //TODO написать тест
+    public void getTest() throws Exception {
+        mockMvc.perform(getAction(BASE_PATH)).andExpect(status().is2xxSuccessful());
     }
 
     @Test
-    public void sendTest() {
-        //TODO написать тест
+    public void sendTest() throws Exception {
+        var organization = randomAlphabetic(1000);
+        var name = randomAlphabetic(1000);
+        var description = randomAlphabetic(1000);
+        var type = randomAlphabetic(1000);
+
+        var documentDto = new DocumentDto();
+        documentDto.setOrganization(organization);
+        documentDto.setPatient(name);
+        documentDto.setType(type);
+        documentDto.setDescription(description);
+        mockMvc.perform(postAction(BASE_PATH, documentDto)).andExpect(status().is2xxSuccessful());
     }
 
     @Test
@@ -97,5 +108,9 @@ public class DocumentControllerTest {
         return post(uri)
                 .contentType(APPLICATION_JSON)
                 .content(mapper.writeValueAsString(dto));
+    }
+
+    private MockHttpServletRequestBuilder getAction(String uri) throws JsonProcessingException {
+        return get(uri);
     }
 }

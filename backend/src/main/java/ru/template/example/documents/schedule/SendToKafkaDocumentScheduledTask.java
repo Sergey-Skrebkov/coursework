@@ -5,14 +5,14 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import ru.template.example.documents.entity.MessageForKafkaEntity;
 import ru.template.example.documents.repository.MessageForKafkaRepository;
-import ru.template.example.kafka.KafkaSender;
+import ru.template.example.documents.kafka.KafkaSender;
 
 import java.util.List;
 
 @Component
 @AllArgsConstructor
-public class SendToKafkaScheduledTask {
-    private static final long TIME_RATE = 5000;
+public class SendToKafkaDocumentScheduledTask {
+    private static final long TIME_RATE = 10000;
     private static final String KAFKA_TOPIC_NAME = "documents";
     private final KafkaSender kafkaSender;
     private final MessageForKafkaRepository messageForKafkaRepository;
@@ -23,6 +23,7 @@ public class SendToKafkaScheduledTask {
         messages.forEach((message) ->{
             kafkaSender.sendMessage(message.getMessage(), message.getId().toString(), KAFKA_TOPIC_NAME);
             message.setSend(true);
+            message.setAccepted(false);
             messageForKafkaRepository.save(message);
         });
     }

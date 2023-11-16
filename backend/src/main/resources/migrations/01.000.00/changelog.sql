@@ -24,4 +24,6 @@ create table document
 
 insert into status(id, code, name)
 values (1, 'NEW', 'Новый'),
-       (2, 'IN_PROCESS', 'В обработке');
+       (2, 'IN_PROCESS', 'В обработке'),
+       (3, 'ACCEPTED', 'Принят'),
+       (4, 'REJECTED', 'Отклонен');
