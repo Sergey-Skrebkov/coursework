@@ -1,4 +1,4 @@
-package ru.template.example.kafka.configuration;
+package ru.template.example.configuration;
 
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;
@@ -7,17 +7,15 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.core.ProducerFactory;
-import org.springframework.kafka.support.serializer.JsonSerializer;
-import ru.template.example.documents.controller.dto.DocumentDto;
 
 import java.util.HashMap;
 import java.util.Map;
 
 @Configuration
-public class KafkaDocumentProducerConfig {
+public class KafkaProducerConfig {
     private final String BOOTSTRAP_SERVER =  "localhost:29092";
     @Bean
-    public ProducerFactory<String, DocumentDto> producerFactory() {
+    public ProducerFactory<String, String> producerFactory() {
         Map<String, Object> configProps = new HashMap<>();
         configProps.put(
                 ProducerConfig.BOOTSTRAP_SERVERS_CONFIG,
@@ -27,11 +25,11 @@ public class KafkaDocumentProducerConfig {
                 StringSerializer.class);
         configProps.put(
                 ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG,
-                JsonSerializer.class);
+                StringSerializer.class);
         return new DefaultKafkaProducerFactory<>(configProps);
     }
     @Bean
-    public KafkaTemplate<String, DocumentDto> kafkaTemplate() {
+    public KafkaTemplate<String, String> kafkaTemplate() {
         return new KafkaTemplate<>(producerFactory());
     }
 }

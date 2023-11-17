@@ -47,4 +47,11 @@ public interface DocumentService {
      * @return документ
      */
     DocumentDto get(Long id);
+
+    /**
+     * Отправить документ на подтверждение
+     * @param documentDto документ
+     * @return документ
+     */
+    DocumentDto sendOnApprove(DocumentDto documentDto);
 }

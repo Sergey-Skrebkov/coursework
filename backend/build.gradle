@@ -28,14 +28,15 @@ dependencies {
     implementation("ma.glasnost.orika:orika-core:1.5.4")
 
     compileOnly("org.projectlombok:lombok:1.18.28")
+    compileOnly('org.springframework.boot:spring-boot-configuration-processor')
     annotationProcessor("org.projectlombok:lombok:1.18.28")
     testImplementation('org.springframework.boot:spring-boot-starter-test')
     testImplementation('org.testcontainers:postgresql:1.17.6')
 
-    compileOnly('org.springframework.boot:spring-boot-configuration-processor')
 }
 
 
 test {
     include('ru/template/example/**')
+    useJUnitPlatform()
 }
