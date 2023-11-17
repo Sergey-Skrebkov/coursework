@@ -95,8 +95,21 @@ public class DocumentControllerTest {
     }
 
     @Test
-    public void deleteTest() {
-        //TODO написать тест
+    public void deleteTest() throws Exception {
+        var organization = randomAlphabetic(1000);
+        var name = randomAlphabetic(1000);
+        var description = randomAlphabetic(1000);
+        var type = randomAlphabetic(1000);
+
+        var documentDto = new DocumentDto();
+        documentDto.setId(5L);
+        documentDto.setOrganization(organization);
+        documentDto.setPatient(name);
+        documentDto.setType(type);
+        documentDto.setDescription(description);
+        mockMvc.perform(postAction(BASE_PATH, documentDto)).andExpect(status().is2xxSuccessful());
+
+        mockMvc.perform(postAction(BASE_PATH, documentDto)).andExpect(status().is2xxSuccessful());
     }
 
     @Test

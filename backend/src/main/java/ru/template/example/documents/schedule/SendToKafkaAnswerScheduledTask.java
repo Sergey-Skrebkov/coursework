@@ -4,10 +4,8 @@ import lombok.AllArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import ru.template.example.documents.entity.MessageForKafkaAnswerEntity;
-import ru.template.example.documents.entity.MessageForKafkaEntity;
 import ru.template.example.documents.kafka.KafkaSender;
 import ru.template.example.documents.repository.MessageForKafkaAnswerRepository;
-import ru.template.example.documents.repository.MessageForKafkaRepository;
 
 import java.util.List;
 
@@ -20,9 +18,9 @@ public class SendToKafkaAnswerScheduledTask {
     private final MessageForKafkaAnswerRepository messageForKafkaAnswerRepository;
 
     @Scheduled(fixedRate = TIME_RATE)
-    public void sendMessagesToKafka(){
+    public void sendMessagesToKafka() {
         List<MessageForKafkaAnswerEntity> messages = messageForKafkaAnswerRepository.findBySendFalse();
-        messages.forEach((message) ->{
+        messages.forEach((message) -> {
             kafkaSender.sendMessage(message.getMessage(), message.getId().toString(), KAFKA_TOPIC_NAME);
             message.setSend(true);
             messageForKafkaAnswerRepository.save(message);

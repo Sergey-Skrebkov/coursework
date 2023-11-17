@@ -9,6 +9,6 @@ RUN npm run build
 
 #Копировать собранный билд с в контейнер с nginxom
 FROM nginx:stable-alpine
-COPY --from=build /app/dist /usr/share/nginx/html
+COPY --from=build usr/app/dist /usr/share/nginx/html
 EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]

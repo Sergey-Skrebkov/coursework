@@ -12,7 +12,6 @@ import org.springframework.stereotype.Component;
 import ru.template.example.documents.controller.dto.AnswerDto;
 import ru.template.example.documents.controller.dto.DocumentDto;
 import ru.template.example.documents.controller.dto.Status;
-import ru.template.example.documents.entity.MessageForKafkaAnswerEntity;
 import ru.template.example.documents.entity.MessageForKafkaEntity;
 import ru.template.example.documents.repository.MessageForKafkaRepository;
 import ru.template.example.documents.service.DocumentService;
@@ -20,6 +19,9 @@ import ru.template.example.documents.service.DocumentService;
 import java.util.Optional;
 import java.util.UUID;
 
+/**
+ * Компонент для приёма ответа из Кафки
+ */
 @Component
 @AllArgsConstructor
 public class KafkaAnswerConsumer {
@@ -27,8 +29,15 @@ public class KafkaAnswerConsumer {
     private final DocumentService documentService;
     private final MessageForKafkaRepository messageForKafkaRepository;
 
+    /**
+     * Метод слушает топик answer в кафке
+     * @param message текст сообщение
+     * @param key ключ сообщения
+     * @throws JsonProcessingException
+     */
     @KafkaListener(topics = "answer", groupId = "group_id")
-    public void consumer(@Payload String message, @Header(KafkaHeaders.RECEIVED_KEY) String key
+    public void consumer(@Payload String message,
+                         @Header(KafkaHeaders.RECEIVED_KEY) String key
     ) throws JsonProcessingException {
         AnswerDto answerDto = objectMapper.readValue(message, AnswerDto.class);
         Optional<MessageForKafkaEntity> messageForKafka
@@ -44,10 +53,6 @@ public class KafkaAnswerConsumer {
         DocumentDto documentDto = documentService.get(answerDto.getId());
         documentDto.setStatus(getStatusForDocument(answerDto.getStatus()));
         documentService.update(documentDto);
-    }
-
-    private void updateMessageForKafka(MessageForKafkaEntity messageForKafka) {
-        messageForKafka.setAccepted(true);
     }
 
     private Status getStatusForDocument(String statusFromMessage) {

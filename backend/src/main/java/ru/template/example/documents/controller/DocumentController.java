@@ -23,6 +23,7 @@ public class DocumentController {
 
     @Autowired
     private DocumentService service;
+    //TODO: Добавить валидацию в ендпоинты!!!
 
     @PostMapping(
             consumes = MediaType.APPLICATION_JSON_VALUE,

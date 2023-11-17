@@ -16,18 +16,17 @@
 
 ## Запуск
 
-### Запуск фронта
+### Собрать Jar файл
 
 ```
-./gradlew ui:npm_run_start
+./gradlew backend:bootJar
 ```
-### Запуск бэка
+### Запуск docker-compose
 ```
-./gradlew backend:bootrun
+docker-compose up -d
 ```
 
 ### Адрес страницы
 ```
-http://localhost:9000/#/
+http://localhost:3006/#/
 ```
-БД sber пользователь sber, пароль passW0RD
