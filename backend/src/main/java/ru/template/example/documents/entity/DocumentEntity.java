@@ -1,9 +1,7 @@
 package ru.template.example.documents.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.Column;
@@ -17,10 +15,11 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import java.time.Instant;
 
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
-@Data
+/**
+ * Сущность документ
+ */
+@Getter
+@Setter
 @Entity
 @Table(name = "document")
 public class DocumentEntity {
