@@ -6,7 +6,7 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.stereotype.Component;
 
-import java.time.*;
+import java.time.Instant;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -26,14 +26,15 @@ public class LoggingAspect {
 
     @After("pointcut()")
     public void logInfoMethodCall(JoinPoint joinPoint) {
+        String name = joinPoint.getSignature().getName();
         Object[] args = joinPoint.getArgs();
-        logger.log(Level.INFO, "Аргументы метода " + List.of(args));
+        logger.log(Level.INFO, "Пришел запрос"+ name +"\nАргументы метода " + List.of(args));
     }
 
     @After("schedulePointcut()")
     public void logInfoAboutScheduleMethodsCall(JoinPoint joinPoint) {
-        String kind = joinPoint.getKind();
-        logger.log(Level.INFO, "Исполняется метод " + kind +
+        String name = joinPoint.getSignature().getName();
+        logger.log(Level.INFO, "Исполняется метод " + name +
                 " в " + Instant.now());
     }
 }

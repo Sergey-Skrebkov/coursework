@@ -33,7 +33,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @ExtendWith({SpringExtension.class, MockitoExtension.class})
 public class DocumentControllerTest {
-    //TODO: Разобраться в этом
     private static final String BASE_PATH = "/documents";
 
     private final ObjectMapper mapper = new JacksonConfiguration().objectMapper();
@@ -54,12 +53,15 @@ public class DocumentControllerTest {
     @Test
     public void successWhenSaveTest() throws Exception {
         var organization = randomAlphabetic(100);
-
+        var patient = "Иванов И. И.";
+        var type = randomAlphabetic(100);
         when(service.save(any())).thenReturn(any());
 
         var documentDto = new DocumentDto();
         documentDto.setId(5L);
         documentDto.setOrganization(organization);
+        documentDto.setPatient(patient);
+        documentDto.setType(type);
         mockMvc.perform(postAction(BASE_PATH, documentDto)).andExpect(status().isOk());
 
         Mockito.verify(service, Mockito.times(1)).save(documentDto);
@@ -67,86 +69,42 @@ public class DocumentControllerTest {
 
     @Test
     public void errorWhenSaveTest() throws Exception {
-        //TOO long name
-        var organization = randomAlphabetic(1000);
-
-        when(service.save(any())).thenThrow(new IllegalStateException("Это слишком!"));
-
         var documentDto = new DocumentDto();
         documentDto.setId(5L);
-        documentDto.setOrganization(organization);
-        mockMvc.perform(postAction(BASE_PATH, documentDto)).andExpect(status().is5xxServerError());
+        mockMvc.perform(postAction(BASE_PATH, documentDto)).andExpect(status().is4xxClientError());
     }
 
     @Test
     public void getTest() throws Exception {
-        when(service.findAll()).thenReturn(anyList());
-
-        var organization = randomAlphabetic(100);
-        var documentDto = new DocumentDto();
-        documentDto.setId(5L);
-        documentDto.setOrganization(organization);
-        // Mockito.verify(service, Mockito.times(1)).save(documentDto);
+        //when(service.findAll()).thenReturn(anyList());
         mockMvc.perform(getAction(BASE_PATH)).andExpect(status().is2xxSuccessful());
     }
 
     @Test
-    public void sendTest() throws Exception {
-        var organization = randomAlphabetic(1000);
-        var name = randomAlphabetic(1000);
-        var description = randomAlphabetic(1000);
-        var type = randomAlphabetic(1000);
-
-        var documentDto = new DocumentDto();
-        documentDto.setOrganization(organization);
-        documentDto.setPatient(name);
-        documentDto.setType(type);
-        documentDto.setDescription(description);
-        mockMvc.perform(postAction(BASE_PATH, documentDto)).andExpect(status().is2xxSuccessful());
+    public void errorWhenDeleteTest() throws Exception {
+        var id = "one";
+        var path = BASE_PATH + "/" + id;
+        mockMvc.perform(deleteAction(path)).andExpect(status().is4xxClientError());
     }
 
     @Test
     public void deleteTest() throws Exception {
-        var organization = randomAlphabetic(1000);
-        var name = randomAlphabetic(1000);
-        var description = randomAlphabetic(1000);
-        var type = randomAlphabetic(1000);
         var id = 5L;
-
-        var documentDto = new DocumentDto();
-        documentDto.setId(5L);
-        documentDto.setOrganization(organization);
-        documentDto.setPatient(name);
-        documentDto.setType(type);
-        documentDto.setDescription(description);
-        mockMvc.perform(postAction(BASE_PATH, documentDto)).andExpect(status().is2xxSuccessful());
-
         var path = BASE_PATH + "/" + id;
         mockMvc.perform(deleteAction(path)).andExpect(status().is2xxSuccessful());
     }
 
     @Test
+    public void errorWhenDeleteAllTest() throws Exception {
+        var idsDto = new IdsDto();
+        mockMvc.perform(deleteAction(BASE_PATH, idsDto)).andExpect(status().is4xxClientError());
+    }
+
+    @Test
     public void deleteAllTest() throws Exception {
-
-        var id = 5L;
-        var recordsNumber = 10L;
         Set<Long> ids = new HashSet<>();
-
-        for (long i = id; i < id + recordsNumber; i++) {
-            var organization = randomAlphabetic(1000);
-            var name = randomAlphabetic(1000);
-            var description = randomAlphabetic(1000);
-            var type = randomAlphabetic(1000);
-
-            var documentDto = new DocumentDto();
-            documentDto.setId(i);
-            documentDto.setOrganization(organization);
-            documentDto.setPatient(name);
-            documentDto.setType(type);
-            documentDto.setDescription(description);
-            mockMvc.perform(postAction(BASE_PATH, documentDto)).andExpect(status().is2xxSuccessful());
-            ids.add(i);
-        }
+        ids.add(1L);
+        ids.add(2L);
         var idsDto = new IdsDto();
         idsDto.setIds(ids);
         mockMvc.perform(deleteAction(BASE_PATH, idsDto)).andExpect(status().is2xxSuccessful());

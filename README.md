@@ -6,24 +6,20 @@
 
 - `backend` - Бэкенд на java.
 - `ui` - Фронтенд на react + redux.
+- `data base` - postgresql 15
 
 ## Подготовка
 
 Установите:
 
-- [node](https://nodejs.org) - front
-- [openjdk](https://openjdk.java.net) 15 - java бэк
+- [docker-desktop](https://www.docker.com) - инструмент для управления несколькими контейнерами.
 
 ## Запуск
 
-### Собрать Jar файл
-
+### Запуск docker-compose 
+#### В параметре HOST необходимо указать ip или имя машины на которой будет осуществлен запуск
 ```
-./gradlew backend:bootJar
-```
-### Запуск docker-compose
-```
-docker-compose up -d
+HOST= docker-compose up
 ```
 
 ### Адрес страницы

@@ -28,6 +28,9 @@ public class DocumentEntity {
     @Column(name = "id", nullable = false)
     private Long id;
 
+    /**
+     * Вид документа
+     */
     @Column(name = "type", nullable = false)
     @Type(type = "org.hibernate.type.TextType")
     private String type;
@@ -39,11 +42,16 @@ public class DocumentEntity {
     @Column(name = "date")
     private Instant date;
 
+    /**
+     * ФИО пациента
+     */
     @Column(name = "patient")
     @Type(type = "org.hibernate.type.TextType")
     private String patient;
 
-
+    /**
+     * Комментарий
+     */
     @Column(name = "description")
     @Type(type = "org.hibernate.type.TextType")
     private String description;
