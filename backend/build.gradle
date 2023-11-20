@@ -38,6 +38,6 @@ dependencies {
 
 
 test {
-    include('ru/template/example/**')
+    include('ru/coursework/**')
     useJUnitPlatform()
 }

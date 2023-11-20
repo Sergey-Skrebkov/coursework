@@ -2,7 +2,7 @@
 
 -- changeset skrebkov-ss:3-1
 
-create table message_for_kafka_answer(
+create table outbox_message(
     id uuid primary key,
     message text not null,
     send bool default false,
