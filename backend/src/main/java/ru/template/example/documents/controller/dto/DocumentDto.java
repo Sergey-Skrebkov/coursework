@@ -4,8 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.codehaus.commons.nullanalysis.NotNull;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
 import java.util.Date;
 
 @Data
@@ -20,10 +21,12 @@ public class DocumentDto {
     /**
      * Вид документа
      */
+    @NotBlank
     private String type;
     /**
      * Организация
      */
+    @NotBlank
     private String organization;
     /**
      * Описание
@@ -32,6 +35,8 @@ public class DocumentDto {
     /**
      * Пациент
      */
+    @NotBlank
+    @Pattern(regexp = "^([а-яА-Я]+[-\\s]?[а-яА-Я]+)\\s*([а-яА-Яa-zA-Z]*\\.)?\\s*([а-яА-Яa-zA-Z]*\\.)?$")
     private String patient;
     /**
      * Дата документа
@@ -41,5 +46,4 @@ public class DocumentDto {
      * Статус
      */
     private Status status;
-
 }

@@ -10,11 +10,11 @@ cors:
 spring:
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5431/sber
+    url: jdbc:postgresql://${HOST}:5431/sber
     username: sber
     password: passWORD
   jpa:
-    show-sql: true
+    show-sql: false
     hibernate:
       ddl-auto: validate
     properties:
@@ -25,4 +25,4 @@ spring:
   liquibase:
     change-log: classpath:migrations/db.changelog-master.yaml
   kafka:
-    bootstrap-servers: localhost:29092
+    bootstrap-servers: ${HOST}:29092
