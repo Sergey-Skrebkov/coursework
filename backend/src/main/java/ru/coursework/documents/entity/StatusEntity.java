@@ -1,6 +1,8 @@
 package ru.coursework.documents.entity;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.Type;
 
@@ -17,6 +19,8 @@ import javax.persistence.Table;
 @Getter
 @Setter
 @Entity
+@AllArgsConstructor
+@NoArgsConstructor
 @Table(name = "status")
 public class StatusEntity {
 
