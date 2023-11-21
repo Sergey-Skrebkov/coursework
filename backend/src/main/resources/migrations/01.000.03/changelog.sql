@@ -1,6 +1,6 @@
 -- liquibase formatted sql
 
--- changeset skrebkov-ss:3-1
+-- changeset skrebkov-ss:4-1
 
 create table outbox_message(
     id uuid primary key,
