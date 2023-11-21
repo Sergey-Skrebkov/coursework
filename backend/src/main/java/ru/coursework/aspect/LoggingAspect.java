@@ -28,7 +28,7 @@ public class LoggingAspect {
     public void logInfoMethodCall(JoinPoint joinPoint) {
         String name = joinPoint.getSignature().getName();
         Object[] args = joinPoint.getArgs();
-        logger.log(Level.INFO, "Пришел запрос"+ name +"\nАргументы метода " + List.of(args));
+        logger.log(Level.INFO, "Пришел запрос "+ name +"\nАргументы в запросе " + List.of(args));
     }
 
     @After("schedulePointcut()")

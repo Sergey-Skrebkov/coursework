@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RestController;
 import ru.coursework.documents.controller.dto.DocumentDto;
 import ru.coursework.documents.controller.dto.IdDto;
 import ru.coursework.documents.controller.dto.IdsDto;
-import ru.coursework.documents.controller.dto.Status;
 import ru.coursework.documents.service.DocumentService;
 
 import javax.validation.Valid;
@@ -42,9 +41,7 @@ public class DocumentController {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     public DocumentDto send(@Valid @RequestBody IdDto id) {
-        DocumentDto document = service.get(id.getId());
-        document.setStatus(new Status("IN_PROCESS", "В обработке"));
-        return service.sendOnApprove(document);
+        return service.sendOnApprove(id.getId());
     }
 
     @DeleteMapping(path = "/{id}")

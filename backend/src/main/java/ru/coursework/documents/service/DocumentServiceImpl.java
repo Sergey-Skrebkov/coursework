@@ -73,12 +73,12 @@ public class DocumentServiceImpl implements DocumentService {
     /**
      * Отправить документ на подтверждение
      *
-     * @param documentDto документ
+     * @param id идентификатор документа
      * @return документ
      */
     @Transactional
-    public DocumentDto sendOnApprove(DocumentDto documentDto) {
-        Optional<DocumentEntity> documentEntityOptional = documentRepository.findById(documentDto.getId());
+    public DocumentDto sendOnApprove(Long id) {
+        Optional<DocumentEntity> documentEntityOptional = documentRepository.findById(id);
         if (!documentEntityOptional
                 .orElseThrow(() -> new NoDocumentException("The document is not in the database"))
                 .getStatus()
@@ -86,9 +86,10 @@ public class DocumentServiceImpl implements DocumentService {
                 .equals("NEW")) {
             throw new DocumentApprovedException("The document has already been sent");
         }
+        DocumentDto documentDto = get(id);
         StatusEntity status = getStatusForDocumentByName("IN_PROCESS");
         addToTableForKafkaSender(documentDto);
-        documentRepository.updateStatusById(status, documentDto.getId());
+        documentRepository.updateStatusById(status, id);
         return documentDto;
     }
 

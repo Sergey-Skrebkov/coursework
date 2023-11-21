@@ -29,8 +29,9 @@ public class KafkaAnswerConsumer {
 
     /**
      * Метод слушает топик answer в кафке, при получении
+     *
      * @param message текст сообщение
-     * @param key ключ сообщения
+     * @param key     ключ сообщения
      * @throws JsonProcessingException если с текстом сообщения что-то не так
      */
     @KafkaListener(topics = "answer", groupId = "group_id")

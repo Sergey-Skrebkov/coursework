@@ -58,10 +58,10 @@ public interface DocumentService {
     /**
      * Отправить документ на подтверждение
      *
-     * @param documentDto документ
+     * @param id идентификатор документа
      * @return документ
      */
-    DocumentDto sendOnApprove(DocumentDto documentDto);
+    DocumentDto sendOnApprove(Long id);
 
     void updateFromKafkaMessage(AnswerDto answerDto);
 }

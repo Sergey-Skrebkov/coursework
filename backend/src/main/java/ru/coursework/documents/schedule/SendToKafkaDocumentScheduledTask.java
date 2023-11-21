@@ -15,7 +15,7 @@ import java.util.List;
 @Component
 @AllArgsConstructor
 public class SendToKafkaDocumentScheduledTask {
-    private static final long TIME_RATE = 10000;
+    private static final long TIME_RATE = 1000;
     private static final String KAFKA_TOPIC_NAME = "documents";
     private final KafkaSender kafkaSender;
     private final MessageForKafkaRepository messageForKafkaRepository;
